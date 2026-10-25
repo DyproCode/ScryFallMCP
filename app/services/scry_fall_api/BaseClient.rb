@@ -5,7 +5,7 @@ module ScryFallApi
 
     private
 
-    def get(path, params={})
+    def get(path, params = {})
       uri = URI(BASE_URL + path)
       uri.query = URI.encode_www_form(params)
       req = Net::HTTP::Get.new(uri)

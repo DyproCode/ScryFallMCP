@@ -4,7 +4,7 @@ class FindCardTool < MCP::Tool
                 Use when looking for card art, card information or anything else regarding magic cards.
               TEXT
 
-  input_schema(
+    input_schema(
     properties:
       { card_name: { type: "string" },
         fields: {
@@ -35,7 +35,7 @@ class FindCardTool < MCP::Tool
   )
 
   def self.call(card_name:, fields: nil, server_context:)
-    card = ScryFallApi::CardsClient.new.find(card_name)
+    card = ScryFallApi::CardsClient.new.find(card_name:)
     card = fields.nil? ? card : card.slice(*fields)
     MCP::Tool::Response.new([ { type: "text", text: JSON.pretty_generate(card) } ])
   rescue ScryFallApi::Error => e
