@@ -7,39 +7,16 @@ class FindCardTool < MCP::Tool
     input_schema(
     properties:
       { card_name: { type: "string" },
-        fields: {
-          type: "array",
-          items: { type: "string", enum:
-            [
-              "mana_cost",
-              "name",
-              "power",
-              "toughness",
-              "loyalty",
-              "oracle_text",
-              "keywords",
-              "legalities",
-              "type_line",
-              "card_faces",
-              "cmc",
-              "color_identity",
-              "colors",
-              "color_indicator",
-              "defense",
-              "edhrec_rank",
-              "game_changer",
-              "reserved"
-            ] }
-        } },
+        fields: Filterable::FIELDS_SCHEMA
+      },
     required: [ "card_name" ]
   )
 
   def self.call(card_name:, fields: nil, server_context:)
     card = ScryFallApi::CardsClient.new.find(card_name:)
-    card = fields.nil? ? card : card.slice(*fields)
+    card = fields ? card.slice(*fields) : card
     MCP::Tool::Response.new([ { type: "text", text: JSON.pretty_generate(card) } ])
   rescue ScryFallApi::Error => e
-    MCP::Tool::Response.new([ { type: "text", text: e.message } ],
-      error: true)
+    MCP::Tool::Response.new([ { type: "text", text: e.message } ], error: true)
   end
 end

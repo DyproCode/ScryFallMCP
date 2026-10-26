@@ -7,7 +7,7 @@ module ScryFallApi
 
     def get(path, params = {})
       uri = URI(BASE_URL + path)
-      uri.query = URI.encode_www_form(params)
+      uri.query = URI.encode_www_form(params) if params.any?
       req = Net::HTTP::Get.new(uri)
       req["Accept"] = "application/json"
       req["User-Agent"] = "ScryFallMCP/0.1"
